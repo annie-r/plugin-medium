@@ -16,6 +16,7 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <!-- Add your extensions here -->
+        <applicationService serviceInterface="services.myServic" serviceImplementation="services.impl.myServicImpl"/>
     </extensions>
 
     <actions>
@@ -29,4 +30,12 @@
                     description="MyAction"/>
         </group>
     </actions>
+
+    <application-components>
+        <component>
+            <implementation-class>
+                components.MyComponent
+            </implementation-class>
+        </component>
+    </application-components>
 </idea-plugin>
