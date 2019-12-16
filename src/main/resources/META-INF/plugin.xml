@@ -16,7 +16,9 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <!-- Add your extensions here -->
-        <applicationService serviceInterface="services.myServic" serviceImplementation="services.impl.myServicImpl"/>
+        <!--<applicationService serviceInterface="services.myServic" serviceImplementation="services.impl.myServicImpl"/> -->
+        <toolWindow id="Sample Calendar" secondary="true" icon="/myToolWindow/plus.png" anchor="right"
+                    factoryClass="myToolWindow.MyToolWindowFactory"/>
     </extensions>
 
     <actions>
