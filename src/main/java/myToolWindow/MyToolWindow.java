@@ -9,21 +9,50 @@ public class MyToolWindow {
     private JButton refreshToolWindowButton;
     private JButton hideToolWindowButton;
     private JLabel currentDate;
+    private JLabel test;
     private JLabel currentTime;
     private JLabel timeZone;
     private JPanel myToolWindowContent;
 
-    public MyToolWindow(ToolWindow toolWindow) {
-        hideToolWindowButton.addActionListener(e -> toolWindow.hide(null));
-        refreshToolWindowButton.addActionListener(e -> currentDateTime());
+    public JPanel createComponent(){
+        JPanel mainPanel = new JPanel();
+        mainPanel.setBounds(0, 0, 452, 120);
+        mainPanel.setLayout(null);
 
-        this.currentDateTime();
+        JLabel lblUsername = new JLabel("Username");
+        lblUsername.setBounds(30, 25, 83, 16);
+        mainPanel.add(lblUsername);
+
+        refreshToolWindowButton = new JButton();
+        refreshToolWindowButton.setBounds(30, 74, 83, 16);
+        mainPanel.add(refreshToolWindowButton);
+
+        myToolWindowContent = mainPanel;
+
+        return mainPanel;
+    }
+
+    public MyToolWindow(ToolWindow toolWindow) {
+        myToolWindowContent = createComponent();
+        hideToolWindowButton.addActionListener(e -> toolWindow.hide(null));
+        refreshToolWindowButton.addActionListener(e -> testThing());
+
+        //this.currentDateTime();
+    }
+
+    public void testThing(){
+
+        JLabel test2 = new JLabel("test2");
+        test2.setBounds(30, 0, 83, 16);
+        myToolWindowContent.add(test2);
+        myToolWindowContent.revalidate();
     }
 
 
     public void currentDateTime() {
         // Get current date and time
         Calendar instance = Calendar.getInstance();
+        test.setText("test");
         currentDate.setText(String.valueOf(instance.get(Calendar.DAY_OF_MONTH)) + "/"
                                 + String.valueOf(instance.get(Calendar.MONTH) + 1) + "/" +
                                 String.valueOf(instance.get(Calendar.YEAR)));
