@@ -1,5 +1,7 @@
 package myToolWindow;
 
+import com.intellij.openapi.fileEditor.FileEditorManager;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindow;
 
 import javax.swing.*;
@@ -13,13 +15,15 @@ public class MyToolWindow {
     private JLabel currentTime;
     private JLabel timeZone;
     private JPanel myToolWindowContent;
+    private Project project;
+    JLabel lblUsername;
 
     public JPanel createComponent(){
         JPanel mainPanel = new JPanel();
         mainPanel.setBounds(0, 0, 452, 120);
         mainPanel.setLayout(null);
 
-        JLabel lblUsername = new JLabel("Username");
+        lblUsername = new JLabel("Username");
         lblUsername.setBounds(30, 25, 83, 16);
         mainPanel.add(lblUsername);
 
@@ -32,7 +36,8 @@ public class MyToolWindow {
         return mainPanel;
     }
 
-    public MyToolWindow(ToolWindow toolWindow) {
+    public MyToolWindow(ToolWindow toolWindow, Project projectArg) {
+        project = projectArg;
         myToolWindowContent = createComponent();
         hideToolWindowButton.addActionListener(e -> toolWindow.hide(null));
         refreshToolWindowButton.addActionListener(e -> testThing());
@@ -41,11 +46,17 @@ public class MyToolWindow {
     }
 
     public void testThing(){
-
-        JLabel test2 = new JLabel("test2");
-        test2.setBounds(30, 0, 83, 16);
-        myToolWindowContent.add(test2);
+        String t = FileEditorManager.getInstance(project).getSelectedTextEditor().getDocument().getText();
+        util.parseXML(t);
+        if (t == null){
+            t = "test";
+        }
+        //JLabel test2 = new JLabel(t);
+        //test2.setBounds(30, 0, 83, 16);
+        //myToolWindowContent.add(test2);
+        lblUsername.setText(t);
         myToolWindowContent.revalidate();
+
     }
 
 

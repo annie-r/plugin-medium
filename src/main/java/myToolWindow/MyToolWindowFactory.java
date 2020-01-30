@@ -29,7 +29,7 @@ public class MyToolWindowFactory implements ToolWindowFactory {
                 super.visitElement(element);
               }
             });*/
-    MyToolWindow myToolWindow = new MyToolWindow(toolWindow);
+    MyToolWindow myToolWindow = new MyToolWindow(toolWindow, project);
     ContentFactory contentFactory = ContentFactory.SERVICE.getInstance();
     Content content = contentFactory.createContent(myToolWindow.getContent(), "", false);
     toolWindow.getContentManager().addContent(content);
