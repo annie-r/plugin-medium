@@ -1,11 +1,14 @@
 package myToolWindow;
 
+
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindow;
 
 import javax.swing.*;
+import java.io.IOException;
 import java.util.Calendar;
+import java.util.HashMap;
 
 public class MyToolWindow {
     private JButton refreshToolWindowButton;
@@ -47,10 +50,13 @@ public class MyToolWindow {
 
     public void testThing(){
         String t = FileEditorManager.getInstance(project).getSelectedTextEditor().getDocument().getText();
-        util.parseXML(t);
+        HashMap<String, HashMap<String,String>> map= new HashMap<>();
+        util.parseXML(t, map);
         if (t == null){
             t = "test";
         }
+
+
         //JLabel test2 = new JLabel(t);
         //test2.setBounds(30, 0, 83, 16);
         //myToolWindowContent.add(test2);
