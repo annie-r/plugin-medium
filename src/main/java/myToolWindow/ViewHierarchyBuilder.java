@@ -37,15 +37,19 @@ public class ViewHierarchyBuilder {
                 // element 0 is the class name
                 boolean elementClosed = false;
                 for (int j = 1; j < element.size(); j++) {
-                    String[] content1 = element.get(j).split("=");
+
+                    String[] rawContent = element.get(j).split("=| ");
                     ArrayList<String> content = new ArrayList<>();
+                    for (String s : rawContent){
+                        content.add(s.trim());
+                    }/*
                     for (int c = 0; c<content1.length;c++){
                         content1[c] = content1[c].trim();
                         String[] contestSplit = content1[c].split(" ");
                         for (int c2 = 0; c2<contestSplit.length; c2++){
                             content.add(contestSplit[c2]);
                         }
-                    }
+                    }*/
                     // attributes come in key, value pairs. if it's odd, there's probably a closing tag
                     int end = content.size();
                     if (content.size()%2 != 0) {
