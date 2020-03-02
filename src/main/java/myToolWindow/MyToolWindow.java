@@ -11,8 +11,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 
-import static myToolWindow.util.getLabel;
-import static myToolWindow.util.isMissingLabelTestClass;
+
 
 public class MyToolWindow {
     private JButton refreshToolWindowButton;
@@ -25,13 +24,16 @@ public class MyToolWindow {
     private Project project;
     JLabel lblUsername;
 
+    private int lastYCoord = 0;
+    private int height = 20;
+
     public JPanel createComponent(){
         JPanel mainPanel = new JPanel();
         mainPanel.setBounds(0, 0, 452, 120);
         mainPanel.setLayout(null);
 
         lblUsername = new JLabel("Username");
-        lblUsername.setBounds(30, 25, 83, 16);
+        lblUsername.setBounds(0, 0, 400, height);
         mainPanel.add(lblUsername);
 
         refreshToolWindowButton = new JButton();
@@ -60,18 +62,27 @@ public class MyToolWindow {
         if (fileText == null){
             t = "test";
         } else {
+            for (ViewNode n : nodes){
+                if(n.isMissingLabelTestClass()) {
+                    lastYCoord += height;
+                    JLabel label = new JLabel(n.getLabel());
+                    label.setBounds(0, lastYCoord, 300, height);
+                    myToolWindowContent.add(label);
+                }
+
+            }/*
             for (int i = 0; i< nodes.size(); i++){
                 ViewNode node = nodes.get(i);
-                if (isMissingLabelTestClass(node)){
-                    t += getLabel(node);
+                if (node.isMissingLabelTestClass()){
+                    t += node.getLabel();
                 }
-            }
+            }*/
         }
 
         //JLabel test2 = new JLabel(t);
         //test2.setBounds(30, 0, 83, 16);
         //myToolWindowContent.add(test2);
-        lblUsername.setText(t);
+        lblUsername.setText("test");
         myToolWindowContent.revalidate();
 
     }

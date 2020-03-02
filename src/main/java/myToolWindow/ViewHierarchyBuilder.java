@@ -18,10 +18,10 @@ public class ViewHierarchyBuilder {
 
         for (int i =0; i<array.length; i++){
 
-            ArrayList<String> element = new ArrayList(Arrays.asList(array[i].split("\n")));
-            String className =element.get(0).split(" ")[0];
-            if(!(className.contains("/")|| className.contains("?")
-                    || className.contains("!") || className.contains(">")) && className.length() > 0) {
+            ArrayList<String> nodeString = new ArrayList(Arrays.asList(array[i].split("\n")));
+            // don't want to regex on ' ' before = because want to eventually be robust to more white space
+            String className =nodeString.get(0).split(" ")[0];
+            if(isClassNameOpenTag(className)) {
 
                 ViewNode parentNode = null;
                 if (parentHierarchy.size() >0){
@@ -29,45 +29,8 @@ public class ViewHierarchyBuilder {
                 }
                 ViewNode node = new ViewNode(className, parentNode);
 
-                // since sometimes an attribute is on the same line as the class name //
-                ArrayList<String> e = new ArrayList(Arrays.asList(element.get(0).split(" ")));
-                for (int k = 1; k < e.size(); k++) {
-                    element.add(e.get(k));
-                }
-                // element 0 is the class name
-                boolean elementClosed = false;
-                for (int j = 1; j < element.size(); j++) {
+                boolean elementClosed = parseNodeAttributes(nodeString, node);
 
-                    String[] rawContent = element.get(j).split("=| ");
-                    ArrayList<String> content = new ArrayList<>();
-                    for (String s : rawContent){
-                        content.add(s.trim());
-                    }/*
-                    for (int c = 0; c<content1.length;c++){
-                        content1[c] = content1[c].trim();
-                        String[] contestSplit = content1[c].split(" ");
-                        for (int c2 = 0; c2<contestSplit.length; c2++){
-                            content.add(contestSplit[c2]);
-                        }
-                    }*/
-                    // attributes come in key, value pairs. if it's odd, there's probably a closing tag
-                    int end = content.size();
-                    if (content.size()%2 != 0) {
-                        end = content.size() -1;
-                    }
-                    if (content.size() >=2){
-                        for(int attIdx = 0; attIdx < end-1; attIdx++){
-                            node.attributes.put(content.get(attIdx).trim(), content.get(attIdx).trim());
-                        }
-                    }
-                    if (content.size()%2 != 0 ){
-                        if(content.get(content.size()-1).contains("/")) {
-                            elementClosed = true;
-                            break;
-                        }
-                    }
-
-                }
                 nodes.add(node);
                 if (!elementClosed) {
                     parentHierarchy.push(node);
@@ -79,5 +42,48 @@ public class ViewHierarchyBuilder {
             }
 
         }
+    }
+
+    static boolean parseNodeAttributes(ArrayList<String> nodeString, ViewNode node){
+        // since sometimes an attribute is on the same line as the class name //
+        ArrayList<String> e = new ArrayList(Arrays.asList(nodeString.get(0).split(" ")));
+        for (int k = 1; k < e.size(); k++) {
+            nodeString.add(e.get(k));
+        }
+        // element 0 is the class name
+        boolean elementClosed = false;
+        for (int j = 1; j < nodeString.size(); j++) {
+            // parsing of the attributes in case there is more than a single key value pair on a line
+            // must check if the closing tag is on the same line.
+            // must remove extrenious white space. Probably not robust
+            String[] rawContent = nodeString.get(j).split("=| ");
+            ArrayList<String> content = new ArrayList<>();
+            for (String s : rawContent){
+                content.add(s.trim());
+            }
+            // attributes come in key, value pairs. if it's odd, there's probably a closing tag
+            int end = content.size();
+            if (content.size()%2 != 0) {
+                end = content.size() -1;
+            }
+            if (content.size() >=2){
+                for(int attIdx = 0; attIdx < end-1; attIdx+=2){
+                    node.attributes.put(content.get(attIdx).trim(), content.get(attIdx+1).trim());
+                }
+            }
+            if (content.size()%2 != 0 ){
+                if(content.get(content.size()-1).contains("/")) {
+                    elementClosed = true;
+                    break;
+                }
+            }
+
+        }
+        return elementClosed;
+    }
+
+    static boolean isClassNameOpenTag(String className){
+        return !(className.contains("/")|| className.contains("?")
+                || className.contains("!") || className.contains(">")) && className.length() > 0;
     }
 }
