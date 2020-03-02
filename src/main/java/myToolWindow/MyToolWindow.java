@@ -55,7 +55,7 @@ public class MyToolWindow {
     public void testThing(){
         String fileText = FileEditorManager.getInstance(project).getSelectedTextEditor().getDocument().getText();
         ArrayList<ViewNode> nodes = new ArrayList<>();
-        util.parseXML(fileText, nodes);
+        ViewHierarchyBuilder.parseXML(fileText, nodes);
         String t = "Test: ";
         if (fileText == null){
             t = "test";
