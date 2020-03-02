@@ -1,16 +1,16 @@
 package myToolWindow;
 
-import layoutinspector.model.ViewProperty;
-import layoutinspector.parser.ViewPropertyParser;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
+import static java.lang.Boolean.TRUE;
+
 public class util {
     /*need to figure out multiple things with same class name. map is wrong thing*/
-    public static void parseXML(String xmlString, HashMap<String, HashMap<String,String>> map){
-        ArrayList<ViewNode> nodes = new ArrayList<>();
+    public static void parseXML(String xmlString, ArrayList<ViewNode> nodes){
+        //ArrayList<ViewNode> nodes = new ArrayList<>();
 
         String[] array = xmlString.split("<");
         //map = new HashMap<>();
@@ -41,76 +41,21 @@ public class util {
 
         }
     }
-/**
-    public static ViewNode createViewNode(
-            ViewNode parent,
-            String data
-    ){
-        int delimIndex = data.indexOf('<');
-        //if (delimIndex < 0) {
-        //    throw IllegalArgumentException("Invalid format for ViewNode, missing @: $data")
-        //}
-        String name = data.substring(0, delimIndex);
-        data = data.substring(delimIndex + 1);
-        delimIndex = data.indexOf(' ');
-        String hash = data.substring(0, delimIndex);
-        ViewNode node = new ViewNode(parent, name, hash);
-        //node.index = if (parent == null) 0 else parent!!.children.size;
 
-        if (data.length() > delimIndex + 1) {
-            loadProperties(node, data.substring(delimIndex + 1));
-            //node.id = node.getProperty("mID", "id")!!.value
+    public static boolean isMissingLabelTestClass(ViewNode node){
+        if (node.className.contains("Image") || node.className.contains("FloatingActionButton")){
+            return true;
         }
-        //node.displayInfo = DisplayInfoFactory.createDisplayInfoFromNode(node)
-
-        return node;
+        return false;
     }
 
-    private static void loadProperties(
-            ViewNode node,
-            String data
-    ) {
-        int start = 0;
-        boolean stop;
-
-        do {
-            int index = data.indexOf('=', start);
-            String fullName = data.substring(start, index);
-
-            int index2 = data.indexOf(' ', index + 1);
-            int length = Integer.parseInt(data.substring(index + 1, index2));
-            start = index2 + 1 + length;
-
-
-            String value = data.substring(index2 + 1, index2 + 1 + length);
-            ViewProperty property = parse(fullName, value);
-
-            //node.properties.add(property)
-            //node.namedProperties[property.fullName] = property
-            node.addPropertyToGroup(property);
-
-
-            stop = (start >= data.length());
-            if (!stop) {
-                start += 1;
-            }
-        } while (!stop);
-
-        //node.properties.sort()
-    }
-
-    private static ViewProperty parse(String propertyFullName, String value){
-        int colonIndex = propertyFullName.indexOf(':');
-        String category;
-        String name;
-        if (colonIndex != -1) {
-            category = propertyFullName.substring(0, colonIndex);
-            name = propertyFullName.substring(colonIndex + 1);
-        } else {
-            category = null;
-            name = propertyFullName;
+    public static String getLabel(ViewNode node){
+        if (node.attributes.containsKey("android:text")){
+          return node.attributes.get("android:text");
         }
-        return new ViewProperty(propertyFullName, name, category, value);
+        if (node.attributes.containsKey("android:contentDescription")){
+            return node.attributes.get("android:contentDescription");
+        }
+        return "?";
     }
-*/
 }

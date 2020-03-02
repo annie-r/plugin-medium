@@ -7,8 +7,12 @@ import com.intellij.openapi.wm.ToolWindow;
 
 import javax.swing.*;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+
+import static myToolWindow.util.getLabel;
+import static myToolWindow.util.isMissingLabelTestClass;
 
 public class MyToolWindow {
     private JButton refreshToolWindowButton;
@@ -49,13 +53,20 @@ public class MyToolWindow {
     }
 
     public void testThing(){
-        String t = FileEditorManager.getInstance(project).getSelectedTextEditor().getDocument().getText();
-        HashMap<String, HashMap<String,String>> map= new HashMap<>();
-        util.parseXML(t, map);
-        if (t == null){
+        String fileText = FileEditorManager.getInstance(project).getSelectedTextEditor().getDocument().getText();
+        ArrayList<ViewNode> nodes = new ArrayList<>();
+        util.parseXML(fileText, nodes);
+        String t = "Test: ";
+        if (fileText == null){
             t = "test";
+        } else {
+            for (int i = 0; i< nodes.size(); i++){
+                ViewNode node = nodes.get(i);
+                if (isMissingLabelTestClass(node)){
+                    t += getLabel(node);
+                }
+            }
         }
-
 
         //JLabel test2 = new JLabel(t);
         //test2.setBounds(30, 0, 83, 16);
