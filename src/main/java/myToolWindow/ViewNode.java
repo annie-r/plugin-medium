@@ -1,5 +1,7 @@
 package myToolWindow;
 
+import com.intellij.openapi.editor.LogicalPosition;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -10,11 +12,13 @@ public class ViewNode {
     protected final String className;
     protected HashMap<String, String> attributes;
     protected final ViewNode parent;
+    protected final LogicalPosition posInDoc;
 
-    public ViewNode(String classArg, ViewNode parentArg){
+    public ViewNode(String classArg, ViewNode parentArg, int line, int column){
         className = classArg;
         attributes = new HashMap<>();
         parent = parentArg;
+        posInDoc = new LogicalPosition(line,column);
     }
 
     public boolean isMissingLabelTestClass(){

@@ -1,5 +1,7 @@
 package myToolWindow;
 
+import org.apache.commons.lang.StringUtils;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -15,7 +17,8 @@ public class ViewHierarchyBuilder {
         String[] array = xmlString.split("<");
 
         Stack<ViewNode> parentHierarchy = new Stack<>();
-
+        int newLineCounter = 0;
+        int columnCounter = 0;
         for (int i =0; i<array.length; i++){
 
             ArrayList<String> nodeString = new ArrayList(Arrays.asList(array[i].split("\n")));
@@ -27,7 +30,7 @@ public class ViewHierarchyBuilder {
                 if (parentHierarchy.size() >0){
                     parentNode = parentHierarchy.peek();
                 }
-                ViewNode node = new ViewNode(className, parentNode);
+                ViewNode node = new ViewNode(className, parentNode, newLineCounter ,columnCounter);
 
                 boolean elementClosed = parseNodeAttributes(nodeString, node);
 
@@ -41,6 +44,21 @@ public class ViewHierarchyBuilder {
                 parentHierarchy.pop();
             }
 
+            // to track logical
+            newLineCounter += StringUtils.countMatches(array[i], "\n");
+            // because of how we split the string, the white spaces for this will be caught in the
+            // tail of the previous element's array
+            //since we already removed '<', this will is the location directly before the '<'
+            //!!!need to fix since the nodeString doesn't gauntee order'
+            int iterator = array[i].length()-1;
+            columnCounter=0;
+            while(iterator >= 0 &&
+                    array[i].charAt(iterator)== ' '){
+                iterator -= 1;
+                columnCounter += 1;
+            }
+
+            //columnCounter = StringUtils.countMatches(nodeString.get(nodeString.size()-1)," ");
         }
     }
 

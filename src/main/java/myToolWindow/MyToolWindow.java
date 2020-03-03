@@ -1,9 +1,16 @@
 package myToolWindow;
 
 
+import com.intellij.openapi.actionSystem.AnActionEvent;
+import com.intellij.openapi.command.WriteCommandAction;
+import com.intellij.openapi.editor.Caret;
+import com.intellij.openapi.editor.Document;
+import com.intellij.openapi.editor.Editor;
+import com.intellij.openapi.editor.LogicalPosition;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindow;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.io.IOException;
@@ -52,6 +59,25 @@ public class MyToolWindow {
         refreshToolWindowButton.addActionListener(e -> testThing());
 
         //this.currentDateTime();
+    }
+
+    public void testAction(){
+        Editor editor = FileEditorManager.getInstance(project).getSelectedTextEditor();
+        final Document document = editor.getDocument();
+        // Work off of the primary caret to get the selection info
+        Caret primaryCaret = editor.getCaretModel().getPrimaryCaret();
+        int start = primaryCaret.getSelectionStart();
+        int end = primaryCaret.getSelectionEnd();
+        // Replace the selection with a fixed string.
+        // Must do this document change in a write action context.
+        WriteCommandAction.runWriteCommandAction(project, () ->
+                document.replaceString(start, end, "editor_basics")
+        );
+        // De-select the text range that was just replaced
+        primaryCaret.moveToLogicalPosition(new LogicalPosition(8, 4));
+        //primaryCaret.removeSelection();
+
+
     }
 
     public void testThing(){
