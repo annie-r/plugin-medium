@@ -1,7 +1,6 @@
 package myToolWindow;
 
 
-import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.editor.Caret;
 import com.intellij.openapi.editor.Document;
@@ -10,10 +9,9 @@ import com.intellij.openapi.editor.LogicalPosition;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindow;
-import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
-import java.io.IOException;
+import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -33,6 +31,8 @@ public class MyToolWindow {
 
     private int lastYCoord = 0;
     private int height = 20;
+
+    HashMap<JButton,ViewNode> buttonMap = new HashMap<>();
 
     public JPanel createComponent(){
         JPanel mainPanel = new JPanel();
@@ -91,28 +91,28 @@ public class MyToolWindow {
             for (ViewNode n : nodes){
                 if(n.isMissingLabelTestClass()) {
                     lastYCoord += height;
-                    JLabel label = new JLabel(n.getLabel());
+                    JButton label = new JButton(n.getLabel());
                     label.setBounds(0, lastYCoord, 300, height);
                     myToolWindowContent.add(label);
+                    buttonMap.put(label, n);
+                    label.addActionListener(e -> labelButtonHandler(e));
                 }
 
-            }/*
-            for (int i = 0; i< nodes.size(); i++){
-                ViewNode node = nodes.get(i);
-                if (node.isMissingLabelTestClass()){
-                    t += node.getLabel();
-                }
-            }*/
+            }
         }
 
-        //JLabel test2 = new JLabel(t);
-        //test2.setBounds(30, 0, 83, 16);
-        //myToolWindowContent.add(test2);
         lblUsername.setText("test");
         myToolWindowContent.revalidate();
 
     }
 
+    public void labelButtonHandler(ActionEvent e){
+        JButton source = (JButton) e.getSource();
+        ViewNode target = buttonMap.get(source);
+        Editor editor = FileEditorManager.getInstance(project).getSelectedTextEditor();
+        Caret primaryCaret = editor.getCaretModel().getPrimaryCaret();
+        primaryCaret.moveToLogicalPosition(target.posInDoc);
+    }
 
     public void currentDateTime() {
         // Get current date and time

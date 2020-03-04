@@ -21,39 +21,6 @@
                     factoryClass="myToolWindow.MyToolWindowFactory"/>
     </extensions>
 
-    <actions>
-        <group id="MyPlugin.TopMenu"
-               text="_MyPlugin"
-               description="MyPlugin Toolbar Menu">
-            <add-to-group group-id="MainMenu" anchor="last"/>
-            <action id="MyAction"
-                    class="actions.MyAction"
-                    text="_MyAction"
-                    description="MyAction"/>
-        </group>
-    </actions>
 
-    <application-components>
-        <component>
-            <implementation-class>
-                components.MyComponent
-            </implementation-class>
-        </component>
-    </application-components>
 
-    <project-components>
-        <!-- Add your project components here -->
-        <component>
-            <implementation-class>
-                components.JiraComponent
-            </implementation-class>
-        </component>
-    </project-components>
-
-    <extensions defaultExtensionNs="com.intellij">
-        <defaultProjectTypeProvider type="Android"/>
-        <projectConfigurable
-                instance="settings.JiraSettings">
-        </projectConfigurable>
-    </extensions>
 </idea-plugin>
