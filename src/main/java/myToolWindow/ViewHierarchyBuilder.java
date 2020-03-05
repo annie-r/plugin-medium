@@ -12,6 +12,64 @@ public class ViewHierarchyBuilder {
 
     private ViewHierarchyBuilder(){}
 
+
+    public static void parseXMLContinuous(String xmlString, ArrayList<ViewNode> nodes) {
+        Stack<ViewNode> parentHierarchy = new Stack<>();
+        int rowCounter = 0;
+        int columnCounter = 0;
+
+        for(int index = 0; index<xmlString.length(); index++){
+            char token = xmlString.charAt(index);
+            // beginning of node
+            if(token=='<' && isClassNameOpenTag(xmlString.charAt(index+1))){
+                index++;
+                token = xmlString.charAt(index);
+                columnCounter++;
+                //get view class name
+                String className = "";
+                while (token!=' '
+                        && token!='\n'){
+                    className += xmlString.charAt(index);
+                    index++;
+                    token = xmlString.charAt(index);
+                }
+
+                ViewNode parentNode = null;
+                if (!parentHierarchy.isEmpty()){
+                    parentNode = parentHierarchy.peek();
+                }
+                ViewNode node = new ViewNode(className, parentNode, rowCounter ,columnCounter);
+
+                String rawNodeString = "";
+                while(token!='>'){
+                    rawNodeString+=token;
+
+                    index++;
+                    token = xmlString.charAt(index);
+                    columnCounter++;
+                }
+                ArrayList<String> nodeString = new ArrayList<>(Arrays.asList(rawNodeString.split("\n")));
+
+                boolean elementClosed = parseNodeAttributes(nodeString, node);
+                nodes.add(node);
+                if (!elementClosed) {
+                    parentHierarchy.push(node);
+                }
+
+            } // end of node
+            else if (token=='/' && !parentHierarchy.isEmpty()){
+                parentHierarchy.pop();
+            }
+
+
+            if (token=='\n'){
+                rowCounter++;
+                columnCounter=0;
+            }
+        }
+
+    }
+
     public static void parseXML(String xmlString, ArrayList<ViewNode> nodes){
 
         String[] array = xmlString.split("<");
@@ -64,13 +122,13 @@ public class ViewHierarchyBuilder {
 
     static boolean parseNodeAttributes(ArrayList<String> nodeString, ViewNode node){
         // since sometimes an attribute is on the same line as the class name //
-        ArrayList<String> e = new ArrayList(Arrays.asList(nodeString.get(0).split(" ")));
+       /* ArrayList<String> e = new ArrayList(Arrays.asList(nodeString.get(0).split(" ")));
         for (int k = 1; k < e.size(); k++) {
             nodeString.add(e.get(k));
-        }
+        }*/
         // element 0 is the class name
         boolean elementClosed = false;
-        for (int j = 1; j < nodeString.size(); j++) {
+        for (int j = 0; j < nodeString.size(); j++) {
             // parsing of the attributes in case there is more than a single key value pair on a line
             // must check if the closing tag is on the same line.
             // must remove extrenious white space. Probably not robust
@@ -79,6 +137,7 @@ public class ViewHierarchyBuilder {
             for (String s : rawContent){
                 content.add(s.trim());
             }
+            content.removeIf(s->(s.length()==0));
             // attributes come in key, value pairs. if it's odd, there's probably a closing tag
             int end = content.size();
             if (content.size()%2 != 0) {
@@ -103,5 +162,9 @@ public class ViewHierarchyBuilder {
     static boolean isClassNameOpenTag(String className){
         return !(className.contains("/")|| className.contains("?")
                 || className.contains("!") || className.contains(">")) && className.length() > 0;
+    }
+
+    static boolean isClassNameOpenTag(char nextToken){
+        return nextToken!='/' && nextToken!='?' && nextToken!='!';
     }
 }

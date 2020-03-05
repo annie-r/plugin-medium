@@ -89,7 +89,7 @@ public class MyToolWindow implements FocusListener {
     public void testThing(){
         String fileText = FileEditorManager.getInstance(project).getSelectedTextEditor().getDocument().getText();
         ArrayList<ViewNode> nodes = new ArrayList<>();
-        ViewHierarchyBuilder.parseXML(fileText, nodes);
+        ViewHierarchyBuilder.parseXMLContinuous(fileText, nodes);
         String t = "Test: ";
         for (ViewNode n : nodes){
             if(n.isMissingLabelTestClass()) {
@@ -98,7 +98,9 @@ public class MyToolWindow implements FocusListener {
                 label.setBounds(0, lastYCoord, 300, height);
                 myToolWindowContent.add(label);
                 buttonMap.put(label, n);
+                /* when enter is hit */
                 label.addActionListener(e -> labelButtonHandler(e));
+                /* when the textbox gets focus */
                 label.addFocusListener(this);
                 label.getDocument().addDocumentListener(new DocumentListener() {
                     public void changedUpdate(DocumentEvent e) {
@@ -149,33 +151,6 @@ public class MyToolWindow implements FocusListener {
         Editor editor = FileEditorManager.getInstance(project).getSelectedTextEditor();
         Caret primaryCaret = editor.getCaretModel().getPrimaryCaret();
         primaryCaret.moveToLogicalPosition(target.posInDoc);
-    }
-
-    public void currentDateTime() {
-        // Get current date and time
-        Calendar instance = Calendar.getInstance();
-        test.setText("test");
-        currentDate.setText(String.valueOf(instance.get(Calendar.DAY_OF_MONTH)) + "/"
-                                + String.valueOf(instance.get(Calendar.MONTH) + 1) + "/" +
-                                String.valueOf(instance.get(Calendar.YEAR)));
-        currentDate.setIcon(new ImageIcon(getClass().getResource("/myToolWindow/Calendar-icon.png")));
-        int min = instance.get(Calendar.MINUTE);
-        String strMin;
-        if (min < 10) {
-            strMin = "0" + String.valueOf(min);
-        } else {
-            strMin = String.valueOf(min);
-        }
-        currentTime.setText(instance.get(Calendar.HOUR_OF_DAY) + ":" + strMin);
-        currentTime.setIcon(new ImageIcon(getClass().getResource("/myToolWindow/Time-icon.png")));
-        // Get time zone
-        long gmt_Offset = instance.get(Calendar.ZONE_OFFSET); // offset from GMT in milliseconds
-        String str_gmt_Offset = String.valueOf(gmt_Offset / 3600000);
-        str_gmt_Offset = (gmt_Offset > 0) ? "GMT + " + str_gmt_Offset : "GMT - " + str_gmt_Offset;
-        timeZone.setText(str_gmt_Offset);
-        timeZone.setIcon(new ImageIcon(getClass().getResource("/myToolWindow/Time-zone-icon.png")));
-
-
     }
 
     public JPanel getContent() {

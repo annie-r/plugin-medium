@@ -13,12 +13,17 @@ public class ViewNode {
     protected HashMap<String, String> attributes;
     protected final ViewNode parent;
     protected final LogicalPosition posInDoc;
+    protected LogicalPosition posOfLabel = null;
 
     public ViewNode(String classArg, ViewNode parentArg, int line, int column){
         className = classArg;
         attributes = new HashMap<>();
         parent = parentArg;
         posInDoc = new LogicalPosition(line,column);
+    }
+
+    public void setPosOfLabel(int line, int column){
+
     }
 
     public boolean isMissingLabelTestClass(){
