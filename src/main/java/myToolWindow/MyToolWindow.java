@@ -150,7 +150,7 @@ public class MyToolWindow implements FocusListener {
         ViewNode target = buttonMap.get(source);
         Editor editor = FileEditorManager.getInstance(project).getSelectedTextEditor();
         Caret primaryCaret = editor.getCaretModel().getPrimaryCaret();
-        primaryCaret.moveToLogicalPosition(target.posInDoc);
+        primaryCaret.moveToLogicalPosition(target.getLabelPosition());
     }
 
     public JPanel getContent() {
@@ -163,7 +163,7 @@ public class MyToolWindow implements FocusListener {
         ViewNode target = buttonMap.get(source);
         Editor editor = FileEditorManager.getInstance(project).getSelectedTextEditor();
         Caret primaryCaret = editor.getCaretModel().getPrimaryCaret();
-        primaryCaret.moveToLogicalPosition(target.posInDoc);
+        primaryCaret.moveToLogicalPosition(target.getLabelPosition());
     }
 
     @Override

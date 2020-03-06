@@ -41,13 +41,29 @@ public class ViewNode {
     }
 
     public String getLabel(){
-        if (attributes.containsKey("android:text")){
-            return attributes.get("android:text").value;
-        }
-        if (attributes.containsKey("android:contentDescription")){
-            return attributes.get("android:contentDescription").value;
+        NodeAttribute labelAttribute = getLabelAttribute();
+        if (labelAttribute != null){
+            return labelAttribute.value;
         }
         return "?";
+    }
+
+    private NodeAttribute getLabelAttribute(){
+        if (attributes.containsKey("android:text")){
+            return attributes.get("android:text");
+        }
+        if (attributes.containsKey("android:contentDescription")){
+            return attributes.get("android:contentDescription");
+        }
+        return null;
+    }
+
+    public LogicalPosition getLabelPosition() {
+        NodeAttribute labelAttribute = getLabelAttribute();
+        if (labelAttribute != null){
+            return labelAttribute.startPos;
+        }
+        return this.posInDoc;
     }
 
     public class NodeAttribute{
