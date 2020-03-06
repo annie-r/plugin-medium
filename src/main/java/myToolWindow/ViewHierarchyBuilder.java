@@ -16,11 +16,15 @@ class XMLIterator {
     int index;
 
     public XMLIterator(String xmlStringArg){
-        rowCounter = 0;
-        columnCounter = 0;
+        this(xmlStringArg, 0,0,0);
+    }
+
+    public XMLIterator(String xmlStringArg,int indexArg, int rowCounterArg, int columnCounterArg ){
+        rowCounter = rowCounterArg;
+        columnCounter = columnCounterArg;
         xmlString = xmlStringArg;
-        index = 0;
-        if (xmlString.length() > 0 ){
+        index = indexArg;
+        if (xmlString.length() > index ){
             token = xmlString.charAt(index);
         }
     }
@@ -48,30 +52,10 @@ public class ViewHierarchyBuilder {
 
     private ViewHierarchyBuilder(){}
 
-    /*
-    private static char token;
-    private static int index;
-    private static String xmlString;
-    private static int rowCounter;
-    private static int columnCounter;
-
-     */
-
-
-
     public static void parseXMLContinuous(String xmlStringArg, ArrayList<ViewNode> nodes) {
         Stack<ViewNode> parentHierarchy = new Stack<>();
 
         XMLIterator iter = new XMLIterator(xmlStringArg);
-
-       /*
-        Character token;
-        int rowCounter = 0;
-        int columnCounter = 0;
-        String xmlString = xmlStringArg;
-        int index = 0;
-*/
-
 
         while(iter.index<iter.xmlString.length()){
             //iter.token = xmlString.charAt(index);
@@ -99,14 +83,15 @@ public class ViewHierarchyBuilder {
                 int attrStartRow = iter.rowCounter;
                 int clmnStartRow = iter.columnCounter;
 
+                /*
                 while(iter.token!='>'){
                     rawNodeString+=iter.token;
 
                     iter.incrementIdx();
                 }
                 ArrayList<String> nodeString = new ArrayList<>(Arrays.asList(rawNodeString.split("\n")));
-
-                boolean elementClosed = parseNodeAttributes(nodeString, node);
+*/
+                boolean elementClosed = parseNodeAttributeContinuous(node, iter);
                 nodes.add(node);
                 if (!elementClosed) {
                     parentHierarchy.push(node);
@@ -181,17 +166,51 @@ public class ViewHierarchyBuilder {
                 iterator -= 1;
                 columnCounter += 1;
             }
-
-            //columnCounter = StringUtils.countMatches(nodeString.get(nodeString.size()-1)," ");
         }
     }
 
-    /*
-    static boolean parseNodeAttributeContinuous(String rawAttributeString, ViewNode node, int row, int column){
+
+    static boolean parseNodeAttributeContinuous(ViewNode node, XMLIterator iter){
         String attrName = "";
         String attrValue = "";
+        int startRow = iter.rowCounter;
+        int startColumn = iter.columnCounter;
 
-    }*/
+        int prevRow = iter.rowCounter;
+        int prevColumn = iter.columnCounter;
+        //to distinguish between '/' in a value and '/' signaling end
+        boolean inAttribute = false;
+        boolean elementClosed = false;
+        while(true) {
+            if (iter.token == '=') {
+                inAttribute = true;
+            } // this doesn't account for string values with spaces in them
+            else if ((iter.token == ' ' || iter.token =='\n') && !attrName.isEmpty() && !attrValue.isEmpty()){
+                node.addAttribute(attrName.trim(), attrValue.trim(), startRow, startColumn, prevRow, prevColumn);
+                attrName = "";
+                attrValue = "";
+                inAttribute = false;
+            }
+            else if (iter.token == '/' && !inAttribute) {
+                elementClosed = true;
+                break;
+            } else if (iter.token == '>') {
+                break;
+            } else if (inAttribute) {
+                attrValue += iter.token;
+            } else if (iter.token !='\n'){
+                if(attrName.isEmpty()){
+                    startRow = iter.rowCounter;
+                    startColumn = iter.columnCounter;
+                }
+                attrName += iter.token;
+            }
+            prevRow = iter.rowCounter;
+            prevColumn = iter.columnCounter;
+            iter.incrementIdx();
+        }
+        return elementClosed;
+    }
 
     static boolean parseNodeAttributes(ArrayList<String> nodeString, ViewNode node){
         // since sometimes an attribute is on the same line as the class name //

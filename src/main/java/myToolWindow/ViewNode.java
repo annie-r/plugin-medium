@@ -12,8 +12,7 @@ public class ViewNode {
     protected final String className;
     protected HashMap<String, NodeAttribute> attributes;
     protected final ViewNode parent;
-    protected final LogicalPosition posInDoc;
-    protected LogicalPosition posOfLabel = null;
+    protected LogicalPosition posInDoc = null;
 
     public ViewNode(String classArg, ViewNode parentArg, int line, int column){
         className = classArg;
@@ -22,8 +21,9 @@ public class ViewNode {
         posInDoc = new LogicalPosition(line,column);
     }
 
-    public void addAttribute(String atrName, String atrValue, int line, int column){
-        attributes.put(atrName, new NodeAttribute(atrName, atrValue, line, column));
+    public void addAttribute(String atrName, String atrValue, int startRow, int startColumn, int endRow, int endColumn){
+        attributes.put(atrName, new NodeAttribute(atrName, atrValue,
+                startRow, startColumn, endRow, endColumn));
     }
 
     public void setPosOfLabel(int line, int column){
@@ -53,12 +53,17 @@ public class ViewNode {
     public class NodeAttribute{
         public final String name;
         String value;
-        public LogicalPosition position;
 
-        public NodeAttribute(String nameArg, String valueArg, int row, int column){
+        //LogicalPosition in the document where the attribute name begins
+        LogicalPosition startPos;
+        //LogicalPosition in the document where the attribute value ends
+        LogicalPosition endPos;
+
+        public NodeAttribute(String nameArg, String valueArg, int startRow, int startColumn, int endRow, int endColumn){
             name = nameArg;
             value = valueArg;
-            position = new LogicalPosition(row, column);
+            startPos = new LogicalPosition(startRow, startColumn);
+            endPos = new LogicalPosition(endRow,endColumn);
         }
 
     }
