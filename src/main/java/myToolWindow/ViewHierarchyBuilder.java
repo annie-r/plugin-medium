@@ -1,5 +1,6 @@
 package myToolWindow;
 
+import com.sun.org.apache.xerces.internal.util.XMLAttributesIteratorImpl;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.ArrayList;
@@ -7,71 +8,24 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Stack;
 
-/** "Static" class that parses an Android XML interface layout file into @link{ViewNode}*/
-public class ViewHierarchyBuilder {
+class XMLIterator {
+    Character token;
+    int rowCounter;
+    int columnCounter;
+    String xmlString;
+    int index;
 
-    private ViewHierarchyBuilder(){}
-
-
-    private static char token;
-    private static int index;
-    private static String xmlString;
-    private static int rowCounter;
-    private static int columnCounter;
-
-    public static void parseXMLContinuous(String xmlStringArg, ArrayList<ViewNode> nodes) {
-        Stack<ViewNode> parentHierarchy = new Stack<>();
-
+    public XMLIterator(String xmlStringArg){
         rowCounter = 0;
         columnCounter = 0;
         xmlString = xmlStringArg;
         index = 0;
-
-        while(index<xmlString.length()){
+        if (xmlString.length() > 0 ){
             token = xmlString.charAt(index);
-            // beginning of node
-            if(token=='<' && isClassNameOpenTag(xmlString.charAt(index+1))){
-                int classNameColumn = columnCounter;
-                int classNameRow = rowCounter;
-                incremIdx();
-                //get view class name
-                String className = "";
-                while (token!=' '
-                        && token!='\n'){
-                    className += xmlString.charAt(index);
-                    incremIdx();
-                }
-
-                ViewNode parentNode = null;
-                if (!parentHierarchy.isEmpty()){
-                    parentNode = parentHierarchy.peek();
-                }
-                ViewNode node = new ViewNode(className, parentNode, classNameRow ,classNameColumn);
-
-                String rawNodeString = "";
-                while(token!='>'){
-                    rawNodeString+=token;
-
-                    incremIdx();
-                }
-                ArrayList<String> nodeString = new ArrayList<>(Arrays.asList(rawNodeString.split("\n")));
-
-                boolean elementClosed = parseNodeAttributes(nodeString, node);
-                nodes.add(node);
-                if (!elementClosed) {
-                    parentHierarchy.push(node);
-                }
-
-            } // end of node
-            else if (token=='/' && !parentHierarchy.isEmpty()){
-                parentHierarchy.pop();
-            }
-            incremIdx();
         }
-
     }
 
-    private static void incremIdx(){
+    public void incrementIdx(){
         index++;
         if(index < xmlString.length()) {
             token = xmlString.charAt(index);
@@ -82,6 +36,104 @@ public class ViewHierarchyBuilder {
                 columnCounter = 0;
             }
         }
+    }
+
+    public char getCharAtIndex(){
+        return xmlString.charAt(index);
+    }
+}
+
+/** "Static" class that parses an Android XML interface layout file into @link{ViewNode}*/
+public class ViewHierarchyBuilder {
+
+    private ViewHierarchyBuilder(){}
+
+    /*
+    private static char token;
+    private static int index;
+    private static String xmlString;
+    private static int rowCounter;
+    private static int columnCounter;
+
+     */
+
+
+
+    public static void parseXMLContinuous(String xmlStringArg, ArrayList<ViewNode> nodes) {
+        Stack<ViewNode> parentHierarchy = new Stack<>();
+
+        XMLIterator iter = new XMLIterator(xmlStringArg);
+
+       /*
+        Character token;
+        int rowCounter = 0;
+        int columnCounter = 0;
+        String xmlString = xmlStringArg;
+        int index = 0;
+*/
+
+
+        while(iter.index<iter.xmlString.length()){
+            //iter.token = xmlString.charAt(index);
+            // beginning of node
+            if(iter.token=='<' && isClassNameOpenTag(iter.xmlString.charAt(iter.index+1))){
+                int classNameColumn = iter.columnCounter;
+                int classNameRow = iter.rowCounter;
+                iter.incrementIdx();
+                //get view class name
+                String className = "";
+                while (iter.token!=' '
+                        && iter.token!='\n'){
+                    className += iter.getCharAtIndex();
+                    iter.incrementIdx();
+                }
+
+                ViewNode parentNode = null;
+                if (!parentHierarchy.isEmpty()){
+                    parentNode = parentHierarchy.peek();
+                }
+                ViewNode node = new ViewNode(className, parentNode, classNameRow ,classNameColumn);
+
+                String rawNodeString = "";
+
+                int attrStartRow = iter.rowCounter;
+                int clmnStartRow = iter.columnCounter;
+
+                while(iter.token!='>'){
+                    rawNodeString+=iter.token;
+
+                    iter.incrementIdx();
+                }
+                ArrayList<String> nodeString = new ArrayList<>(Arrays.asList(rawNodeString.split("\n")));
+
+                boolean elementClosed = parseNodeAttributes(nodeString, node);
+                nodes.add(node);
+                if (!elementClosed) {
+                    parentHierarchy.push(node);
+                }
+
+            } // end of node
+            else if (iter.token=='/' && !parentHierarchy.isEmpty()){
+                parentHierarchy.pop();
+            }
+            iter.incrementIdx();
+        }
+
+    }
+
+    private static Character incremIdx(String xmlString, int index, int rowCounter, int columnCounter){
+        index++;
+        Character token = null;
+        if(index < xmlString.length()) {
+            token = xmlString.charAt(index);
+            columnCounter++;
+
+            if (token == '\n') {
+                rowCounter++;
+                columnCounter = 0;
+            }
+        }
+        return token;
     }
 
     public static void parseXML(String xmlString, ArrayList<ViewNode> nodes){
@@ -134,6 +186,13 @@ public class ViewHierarchyBuilder {
         }
     }
 
+    /*
+    static boolean parseNodeAttributeContinuous(String rawAttributeString, ViewNode node, int row, int column){
+        String attrName = "";
+        String attrValue = "";
+
+    }*/
+
     static boolean parseNodeAttributes(ArrayList<String> nodeString, ViewNode node){
         // since sometimes an attribute is on the same line as the class name //
        /* ArrayList<String> e = new ArrayList(Arrays.asList(nodeString.get(0).split(" ")));
@@ -159,7 +218,7 @@ public class ViewHierarchyBuilder {
             }
             if (content.size() >=2){
                 for(int attIdx = 0; attIdx < end-1; attIdx+=2){
-                    node.attributes.put(content.get(attIdx).trim(), content.get(attIdx+1).trim());
+                    //node.attributes.put(content.get(attIdx).trim(), content.get(attIdx+1).trim());
                 }
             }
             if (content.size()%2 != 0 ){
