@@ -13,12 +13,10 @@ import com.intellij.openapi.wm.ToolWindow;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.text.View;
 import java.awt.event.ActionEvent;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 
 
@@ -44,12 +42,8 @@ public class MyToolWindow implements FocusListener {
         mainPanel.setBounds(0, 0, 452, 120);
         mainPanel.setLayout(null);
 
-        lblUsername = new JLabel("Username");
-        lblUsername.setBounds(0, 0, 400, height);
-        mainPanel.add(lblUsername);
-
-        refreshToolWindowButton = new JButton();
-        refreshToolWindowButton.setBounds(30, 74, 83, 16);
+        refreshToolWindowButton = new JButton("see labels");
+        refreshToolWindowButton.setBounds(0, 0, 83, 40);
         mainPanel.add(refreshToolWindowButton);
 
         myToolWindowContent = mainPanel;
@@ -88,32 +82,47 @@ public class MyToolWindow implements FocusListener {
 
     public void testThing(){
         String fileText = FileEditorManager.getInstance(project).getSelectedTextEditor().getDocument().getText();
+
+        //reset window
+        for (JTextField field : buttonMap.keySet()){
+            myToolWindowContent.remove(field);
+
+        }
+        myToolWindowContent.revalidate();
+        myToolWindowContent.repaint();
+        lastYCoord = 0;
+        buttonMap.clear();
+
         ArrayList<ViewNode> nodes = new ArrayList<>();
         ViewHierarchyBuilder.parseXMLContinuous(fileText, nodes);
         String t = "Test: ";
         for (ViewNode n : nodes){
             if(n.isMissingLabelTestClass()) {
                 lastYCoord += height;
-                JTextField label = new JTextField(n.getLabel());
+                JTextField label = new JTextField(n.getLabelValue());
                 label.setBounds(0, lastYCoord, 300, height);
                 myToolWindowContent.add(label);
                 buttonMap.put(label, n);
-                /* when enter is hit */
-                label.addActionListener(e -> labelButtonHandler(e));
+
                 /* when the textbox gets focus */
                 label.addFocusListener(this);
+
+                // not used right now
+                /* when enter is hit */
+                label.addActionListener(e -> labelButtonHandler(e));
+
                 label.getDocument().addDocumentListener(new DocumentListener() {
                     public void changedUpdate(DocumentEvent e) {
-                        JOptionPane.showMessageDialog(null,
-                                "Change");
+                        //JOptionPane.showMessageDialog(null,
+                          //      "Change");
                     }
                     public void removeUpdate(DocumentEvent e) {
-                        JOptionPane.showMessageDialog(null,
-                                "Remove");
+                        //JOptionPane.showMessageDialog(null,
+                          //      "Remove");
                     }
                     public void insertUpdate(DocumentEvent e) {
-                        JOptionPane.showMessageDialog(null,
-                                "Insert");
+                        //JOptionPane.showMessageDialog(null,
+                          //      "Insert");
                     }
 
 
@@ -150,7 +159,7 @@ public class MyToolWindow implements FocusListener {
         ViewNode target = buttonMap.get(source);
         Editor editor = FileEditorManager.getInstance(project).getSelectedTextEditor();
         Caret primaryCaret = editor.getCaretModel().getPrimaryCaret();
-        primaryCaret.moveToLogicalPosition(target.getLabelPosition());
+        primaryCaret.moveToLogicalPosition(target.getLabelStartPosition());
     }
 
     public JPanel getContent() {
@@ -163,11 +172,33 @@ public class MyToolWindow implements FocusListener {
         ViewNode target = buttonMap.get(source);
         Editor editor = FileEditorManager.getInstance(project).getSelectedTextEditor();
         Caret primaryCaret = editor.getCaretModel().getPrimaryCaret();
-        primaryCaret.moveToLogicalPosition(target.getLabelPosition());
+        primaryCaret.moveToLogicalPosition(target.getLabelStartPosition());
     }
 
     @Override
     public void focusLost(FocusEvent e) {
+        JTextField source = (JTextField) e.getSource();
+        ViewNode target = buttonMap.get(source);
+
+        Editor editor = FileEditorManager.getInstance(project).getSelectedTextEditor();
+        final Project project = editor.getProject();
+        final Document document = editor.getDocument();
+
+        Caret primaryCaret = editor.getCaretModel().getPrimaryCaret();
+        primaryCaret.moveToLogicalPosition(target.getLabelStartPosition());
+        int offset = primaryCaret.getOffset();
+        int lineLength = target.getLabelEndPosition().column - target.getLabelStartPosition().column;
+
+
+        WriteCommandAction.runWriteCommandAction(project, () ->
+                document.replaceString(0,5,
+                        "hello")
+        );
+        WriteCommandAction.runWriteCommandAction(project, () ->
+                document.replaceString(offset,
+                        offset+lineLength,
+                        target.getLabelAttributeName()+"="+source.getText())
+        );
 
     }
 }

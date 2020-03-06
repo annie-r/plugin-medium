@@ -40,10 +40,18 @@ public class ViewNode {
         return false;
     }
 
-    public String getLabel(){
+    public String getLabelValue(){
         NodeAttribute labelAttribute = getLabelAttribute();
         if (labelAttribute != null){
             return labelAttribute.value;
+        }
+        return "?";
+    }
+
+    public String getLabelAttributeName(){
+        NodeAttribute labelAttribute = getLabelAttribute();
+        if (labelAttribute != null){
+            return labelAttribute.name;
         }
         return "?";
     }
@@ -58,10 +66,18 @@ public class ViewNode {
         return null;
     }
 
-    public LogicalPosition getLabelPosition() {
+    public LogicalPosition getLabelStartPosition() {
         NodeAttribute labelAttribute = getLabelAttribute();
         if (labelAttribute != null){
             return labelAttribute.startPos;
+        }
+        return this.posInDoc;
+    }
+
+    public LogicalPosition getLabelEndPosition() {
+        NodeAttribute labelAttribute = getLabelAttribute();
+        if (labelAttribute != null){
+            return labelAttribute.endPos;
         }
         return this.posInDoc;
     }

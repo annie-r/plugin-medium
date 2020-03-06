@@ -1,11 +1,6 @@
 package myToolWindow;
 
-import com.sun.org.apache.xerces.internal.util.XMLAttributesIteratorImpl;
-import org.apache.commons.lang.StringUtils;
-
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Stack;
 
 class XMLIterator {
