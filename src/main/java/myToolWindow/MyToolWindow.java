@@ -24,13 +24,10 @@ import java.util.HashMap;
 public class MyToolWindow implements FocusListener {
     private JButton refreshToolWindowButton;
     private JButton hideToolWindowButton;
-    private JLabel currentDate;
-    private JLabel test;
-    private JLabel currentTime;
-    private JLabel timeZone;
+
     private JPanel myToolWindowContent;
     private Project project;
-    private JLabel lblUsername;
+
 
     private int lastYCoord = 0;
     private int height = 50;
@@ -132,7 +129,7 @@ public class MyToolWindow implements FocusListener {
         }
 
 
-        lblUsername.setText("test");
+
         myToolWindowContent.revalidate();
 
     }
@@ -176,10 +173,11 @@ public class MyToolWindow implements FocusListener {
     }
 
     @Override
+    // for labels
     public void focusLost(FocusEvent e) {
         JTextField source = (JTextField) e.getSource();
         ViewNode target = buttonMap.get(source);
-
+        String sourceText = source.getText();
         Editor editor = FileEditorManager.getInstance(project).getSelectedTextEditor();
         final Project project = editor.getProject();
         final Document document = editor.getDocument();
@@ -189,16 +187,18 @@ public class MyToolWindow implements FocusListener {
         int offset = primaryCaret.getOffset();
         int lineLength = target.getLabelEndPosition().column - target.getLabelStartPosition().column;
 
+        // if valid label, replace
+        if (!source.getText().equals("?")){
+            WriteCommandAction.runWriteCommandAction(project, () ->
+                    document.replaceString(offset,
+                            offset+lineLength,
+                            target.getLabelAttributeName()+"="+source.getText())
+            );
+        }
 
-        WriteCommandAction.runWriteCommandAction(project, () ->
-                document.replaceString(0,5,
-                        "hello")
-        );
-        WriteCommandAction.runWriteCommandAction(project, () ->
-                document.replaceString(offset,
-                        offset+lineLength,
-                        target.getLabelAttributeName()+"="+source.getText())
-        );
+
+
+        testThing();
 
     }
 }

@@ -40,6 +40,10 @@ class XMLIterator {
     public char getCharAtIndex(){
         return xmlString.charAt(index);
     }
+
+    public boolean isComplete(){
+        return index >= xmlString.length();
+    }
 }
 
 /** "Static" class that parses an Android XML interface layout file into @link{ViewNode}*/
@@ -55,7 +59,7 @@ public class ViewHierarchyBuilder {
         while(iter.index<iter.xmlString.length()){
             //iter.token = xmlString.charAt(index);
             // beginning of node
-            if(iter.token=='<' && isClassNameOpenTag(iter.xmlString.charAt(iter.index+1))){
+            if(iter.token=='<' && isClassNameOpenTag(iter.xmlString.charAt(iter.index))){
                 int classNameColumn = iter.columnCounter;
                 int classNameRow = iter.rowCounter;
                 iter.incrementIdx();
@@ -99,7 +103,8 @@ public class ViewHierarchyBuilder {
         //to distinguish between '/' in a value and '/' signaling end
         boolean inAttribute = false;
         boolean elementClosed = false;
-        while(true) {
+        while(!iter.isComplete()) {
+            //NEED TO ADD COMPONENT OF ITER THAT TESTS IF IT'S TOO FAR
             if (iter.token == '=') {
                 inAttribute = true;
             } // this doesn't account for string values with spaces in them
@@ -110,7 +115,7 @@ public class ViewHierarchyBuilder {
                     spaceOffset++;
                 }
 
-                node.addAttribute(attrName.trim(), attrValue.trim(), startRow, startColumn+spaceOffset-1,
+                node.addAttribute(attrName.trim(), attrValue.trim(), startRow+1, startColumn+spaceOffset-1,
                         prevRow, prevColumn);
                 attrName = "";
                 attrValue = "";

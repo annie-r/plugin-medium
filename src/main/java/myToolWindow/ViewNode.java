@@ -53,7 +53,8 @@ public class ViewNode {
         if (labelAttribute != null){
             return labelAttribute.name;
         }
-        return "?";
+        // TODO: make this more robust given class type
+        return "android:contentDescription";
     }
 
     private NodeAttribute getLabelAttribute(){
