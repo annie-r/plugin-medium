@@ -80,7 +80,7 @@ public class ViewNode {
         if (labelAttribute != null){
             return labelAttribute.endPos;
         }
-        return this.posInDoc;
+        return new LogicalPosition(this.posInDoc.line, this.posInDoc.column+className.length());
     }
 
     public class NodeAttribute{

@@ -77,7 +77,7 @@ public class ViewHierarchyBuilder {
                 if (!parentHierarchy.isEmpty()){
                     parentNode = parentHierarchy.peek();
                 }
-                ViewNode node = new ViewNode(className, parentNode, classNameRow ,classNameColumn);
+                ViewNode node = new ViewNode(className, parentNode, classNameRow+1 ,classNameColumn);
 
                 boolean elementClosed = parseNodeAttributeContinuous(node, iter);
                 nodes.add(node);

@@ -177,7 +177,6 @@ public class MyToolWindow implements FocusListener {
     public void focusLost(FocusEvent e) {
         JTextField source = (JTextField) e.getSource();
         ViewNode target = buttonMap.get(source);
-        String sourceText = source.getText();
         Editor editor = FileEditorManager.getInstance(project).getSelectedTextEditor();
         final Project project = editor.getProject();
         final Document document = editor.getDocument();
@@ -189,11 +188,23 @@ public class MyToolWindow implements FocusListener {
 
         // if valid label, replace
         if (!source.getText().equals("?")){
-            WriteCommandAction.runWriteCommandAction(project, () ->
-                    document.replaceString(offset,
-                            offset+lineLength,
-                            target.getLabelAttributeName()+"="+source.getText())
-            );
+            // if replacing old label
+            if(!target.getLabelValue().equals("?")) {
+                WriteCommandAction.runWriteCommandAction(project, () ->
+                        document.replaceString(offset,
+                                offset + lineLength,
+                                target.getLabelAttributeName() + "=" + source.getText())
+                );
+            }
+            // if creating new label
+            else {
+                //TODO: make more robust to differeing types of labeling based on class, not just cont desc
+                WriteCommandAction.runWriteCommandAction(project, () ->
+                        document.replaceString(offset+target.className.length(),
+                                offset+target.className.length(),
+                                "\n"+target.getLabelAttributeName() + "=" + source.getText()+"\n")
+                );
+            }
         }
 
 
