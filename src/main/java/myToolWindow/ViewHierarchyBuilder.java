@@ -59,7 +59,9 @@ public class ViewHierarchyBuilder {
         while(iter.index<iter.xmlString.length()){
             //iter.token = xmlString.charAt(index);
             // beginning of node
-            if(iter.token=='<' && isClassNameOpenTag(iter.xmlString.charAt(iter.index))){
+            if(iter.token=='<' &&
+                    iter.index+1 < iter.xmlString.length() &&
+                    isClassNameOpenTag(iter.xmlString.charAt(iter.index+1))){
                 int classNameColumn = iter.columnCounter;
                 int classNameRow = iter.rowCounter;
                 iter.incrementIdx();
@@ -104,7 +106,7 @@ public class ViewHierarchyBuilder {
         boolean inAttribute = false;
         boolean elementClosed = false;
         while(!iter.isComplete()) {
-            //NEED TO ADD COMPONENT OF ITER THAT TESTS IF IT'S TOO FAR
+
             if (iter.token == '=') {
                 inAttribute = true;
             } // this doesn't account for string values with spaces in them
@@ -127,7 +129,12 @@ public class ViewHierarchyBuilder {
             } else if (iter.token == '>') {
                 break;
             } else if (inAttribute) {
-                attrValue += iter.token;
+                //don't want non-null attribute to be triggered by leading spaces or new lines
+                if (!attrValue.isEmpty() || (
+                        iter.token != ' ' && iter.token != '\n')){
+
+                    attrValue += iter.token;
+                }
             } else if (iter.token !='\n'){
                 if(attrName.isEmpty()){
                     startRow = iter.rowCounter;
