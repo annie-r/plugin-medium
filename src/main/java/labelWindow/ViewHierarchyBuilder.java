@@ -117,7 +117,13 @@ public class ViewHierarchyBuilder {
                     spaceOffset++;
                 }
 
-                node.addAttribute(attrName.trim(), attrValue.trim(), startRow+1, startColumn+spaceOffset-1,
+                String attrValueTrim = attrValue.trim();
+
+                if (attrValueTrim.substring(0,1).equals("\"") &&
+                        attrValueTrim.substring(attrValueTrim.length()-1).equals("\"")){
+                    attrValueTrim = attrValueTrim.substring(1,attrValueTrim.length()-1);
+                }
+                node.addAttribute(attrName.trim(), attrValueTrim, startRow+1, startColumn+spaceOffset-1,
                         prevRow, prevColumn);
                 attrName = "";
                 attrValue = "";

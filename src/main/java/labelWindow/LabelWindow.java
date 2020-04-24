@@ -92,6 +92,8 @@ public class LabelWindow implements FocusListener {
         for (ViewNode n : nodes){
             if(n.isMissingLabelTestClass()) {
                 lastYCoord += height;
+                // take out quotations when
+                String labelString = n.getLabelValue();
                 JTextField label = new JTextField(n.getLabelValue());
                 label.setBounds(0, lastYCoord, 300, height);
                 myToolWindowContent.add(label);
@@ -166,16 +168,18 @@ public class LabelWindow implements FocusListener {
                 WriteCommandAction.runWriteCommandAction(project, () ->
                         document.replaceString(offset,
                                 offset + lineLength,
-                                target.getLabelAttributeName() + "=" + source.getText())
+                                target.getLabelAttributeName() + "=" +
+                                        "\"" + source.getText() + "\"")
                 );
             }
             // if creating new label
             else {
-                //TODO: make more robust to differeing types of labeling based on class, not just cont desc
+                //TODO: make more robust to differing types of labeling based on class, not just cont desc
                 WriteCommandAction.runWriteCommandAction(project, () ->
                         document.replaceString(offset+target.className.length(),
                                 offset+target.className.length(),
-                                "\n"+target.getLabelAttributeName() + "=" + source.getText()+"\n")
+                                "\n"+target.getLabelAttributeName() + "=" +
+                                        "\"" + source.getText()+"\""+"\n")
                 );
             }
         }

@@ -27,10 +27,6 @@ public class ViewNode {
                 startRow, startColumn, endRow, endColumn));
     }
 
-    public void setPosOfLabel(int line, int column){
-
-    }
-
     public boolean isMissingLabelTestClass(){
         for( String name : missingLabelClasses){
             if (className.contains(name)){
@@ -101,7 +97,4 @@ public class ViewNode {
         }
 
     }
-
-
-
 }
