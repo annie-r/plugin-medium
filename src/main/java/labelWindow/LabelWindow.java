@@ -1,4 +1,4 @@
-package myToolWindow;
+package labelWindow;
 
 
 import com.intellij.openapi.command.WriteCommandAction;
@@ -21,9 +21,8 @@ import java.util.HashMap;
 
 
 
-public class MyToolWindow implements FocusListener {
-    private JButton refreshToolWindowButton;
-    private JButton hideToolWindowButton;
+public class LabelWindow implements FocusListener {
+    private JButton seeLabelsButton;
 
     private JPanel myToolWindowContent;
     private Project project;
@@ -39,23 +38,20 @@ public class MyToolWindow implements FocusListener {
         mainPanel.setBounds(0, 0, 452, 120);
         mainPanel.setLayout(null);
 
-        refreshToolWindowButton = new JButton("see labels");
-        refreshToolWindowButton.setBounds(0, 0, 83, 40);
-        mainPanel.add(refreshToolWindowButton);
+        seeLabelsButton = new JButton("see labels");
+        seeLabelsButton.setBounds(0, 0, 83, 40);
+        mainPanel.add(seeLabelsButton);
 
         myToolWindowContent = mainPanel;
 
         return mainPanel;
     }
 
-    public MyToolWindow(ToolWindow toolWindow, Project projectArg) {
+    public LabelWindow(ToolWindow toolWindow, Project projectArg) {
         project = projectArg;
         myToolWindowContent = createComponent();
-        hideToolWindowButton.addActionListener(e -> toolWindow.hide(null));
-        refreshToolWindowButton.addActionListener(e -> testThing());
-
-
-        //this.currentDateTime();
+        //hideToolWindowButton.addActionListener(e -> toolWindow.hide(null));
+        seeLabelsButton.addActionListener(e -> getLabels());
     }
 
     public void testAction(){
@@ -77,7 +73,7 @@ public class MyToolWindow implements FocusListener {
 
     }
 
-    public void testThing(){
+    public void getLabels(){
         String fileText = FileEditorManager.getInstance(project).getSelectedTextEditor().getDocument().getText();
 
         //reset window
@@ -92,7 +88,7 @@ public class MyToolWindow implements FocusListener {
 
         ArrayList<ViewNode> nodes = new ArrayList<>();
         ViewHierarchyBuilder.parseXMLContinuous(fileText, nodes);
-        String t = "Test: ";
+
         for (ViewNode n : nodes){
             if(n.isMissingLabelTestClass()) {
                 lastYCoord += height;
@@ -121,35 +117,12 @@ public class MyToolWindow implements FocusListener {
                         //JOptionPane.showMessageDialog(null,
                           //      "Insert");
                     }
-
-
                 });
             }
-
         }
-
-
-
         myToolWindowContent.revalidate();
 
     }
-/*
-    class LabelAction extends AbstractAction{
-        ViewNode node;
-        public LabelAction(ViewNode nodeArg){
-            node = nodeArg;
-        }
-
-        public void actionPerformed(ActionEvent e){
-            JTextField source = (JTextField) e.getSource();
-            ViewNode target = buttonMap.get(source);
-            Editor editor = FileEditorManager.getInstance(project).getSelectedTextEditor();
-            Caret primaryCaret = editor.getCaretModel().getPrimaryCaret();
-            primaryCaret.moveToLogicalPosition(target.posInDoc);
-        }
-
-    }
-*/
 
     public void labelButtonHandler(ActionEvent e){
         JTextField source = (JTextField) e.getSource();
@@ -187,9 +160,9 @@ public class MyToolWindow implements FocusListener {
         int lineLength = target.getLabelEndPosition().column - target.getLabelStartPosition().column;
 
         // if valid label, replace
-        if (!source.getText().equals("?")){
+        if (!source.getText().equals(ViewNode.EMPTY_LABEL_STRING)){
             // if replacing old label
-            if(!target.getLabelValue().equals("?")) {
+            if(!target.getLabelValue().equals(ViewNode.EMPTY_LABEL_STRING)) {
                 WriteCommandAction.runWriteCommandAction(project, () ->
                         document.replaceString(offset,
                                 offset + lineLength,
@@ -206,10 +179,6 @@ public class MyToolWindow implements FocusListener {
                 );
             }
         }
-
-
-
-        testThing();
-
+        getLabels();
     }
 }

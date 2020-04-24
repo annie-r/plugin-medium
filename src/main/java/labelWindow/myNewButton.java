@@ -1,4 +1,4 @@
-package myToolWindow;
+package labelWindow;
 
 import javax.swing.*;
 

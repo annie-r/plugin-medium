@@ -1,4 +1,4 @@
-package myToolWindow
+package labelWindow
 /*
 import layoutinspector.model.ViewNode
 import layoutinspector.parser.DisplayInfoFactory

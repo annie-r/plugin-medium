@@ -1,4 +1,4 @@
-package myToolWindow;
+package labelWindow;
 
 import java.util.ArrayList;
 import java.util.Stack;

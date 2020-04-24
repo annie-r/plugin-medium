@@ -1,18 +1,19 @@
-package myToolWindow;
+package labelWindow;
 
 import com.intellij.openapi.editor.LogicalPosition;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 
 public class ViewNode {
     final ArrayList<String> missingLabelClasses = new ArrayList<>(Arrays.asList("Image","FloatingActionButton"));
     protected final String className;
     protected HashMap<String, NodeAttribute> attributes;
     protected final ViewNode parent;
-    protected LogicalPosition posInDoc = null;
+    protected LogicalPosition posInDoc;
+
+    public static String EMPTY_LABEL_STRING = "?";
 
     public ViewNode(String classArg, ViewNode parentArg, int line, int column){
         className = classArg;
@@ -45,7 +46,7 @@ public class ViewNode {
         if (labelAttribute != null){
             return labelAttribute.value;
         }
-        return "?";
+        return EMPTY_LABEL_STRING;
     }
 
     public String getLabelAttributeName(){
