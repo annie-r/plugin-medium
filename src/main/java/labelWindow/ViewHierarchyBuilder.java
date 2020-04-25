@@ -77,7 +77,7 @@ public class ViewHierarchyBuilder {
                 if (!parentHierarchy.isEmpty()){
                     parentNode = parentHierarchy.peek();
                 }
-                ViewNode node = new ViewNode(className, parentNode, classNameRow+1 ,classNameColumn);
+                ViewNode node = new ViewNode(className, parentNode, classNameRow ,classNameColumn);
 
                 boolean elementClosed = parseNodeAttributeContinuous(node, iter);
                 nodes.add(node);
@@ -123,7 +123,7 @@ public class ViewHierarchyBuilder {
                         attrValueTrim.substring(attrValueTrim.length()-1).equals("\"")){
                     attrValueTrim = attrValueTrim.substring(1,attrValueTrim.length()-1);
                 }
-                node.addAttribute(attrName.trim(), attrValueTrim, startRow+1, startColumn+spaceOffset-1,
+                node.addAttribute(attrName.trim(), attrValueTrim, startRow, startColumn+spaceOffset-1,
                         prevRow, prevColumn);
                 attrName = "";
                 attrValue = "";

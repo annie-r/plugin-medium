@@ -32,6 +32,7 @@ public class LabelWindow implements FocusListener {
     private int height = 50;
 
     private HashMap<JTextField,ViewNode> buttonMap = new HashMap<>();
+    private HashMap<JCheckBox, JTextField> checkboxMap = new HashMap<>();
 
     public JPanel createComponent(){
         JPanel mainPanel = new JPanel();
@@ -92,11 +93,11 @@ public class LabelWindow implements FocusListener {
         for (ViewNode n : nodes){
             if(n.isMissingLabelTestClass()) {
                 lastYCoord += height;
-                // take out quotations when
-                String labelString = n.getLabelValue();
+
                 JTextField label = new JTextField(n.getLabelValue());
                 label.setBounds(0, lastYCoord, 300, height);
                 myToolWindowContent.add(label);
+
                 buttonMap.put(label, n);
 
                 /* when the textbox gets focus */
@@ -160,7 +161,7 @@ public class LabelWindow implements FocusListener {
         primaryCaret.moveToLogicalPosition(target.getLabelStartPosition());
         int offset = primaryCaret.getOffset();
         int lineLength = target.getLabelEndPosition().column - target.getLabelStartPosition().column;
-
+        //editor.visualPositionToPoint2D(editor.offsetToVisualPosition(offset));
         // if valid label, replace
         if (!source.getText().equals(ViewNode.EMPTY_LABEL_STRING)){
             // if replacing old label
@@ -171,6 +172,7 @@ public class LabelWindow implements FocusListener {
                                 target.getLabelAttributeName() + "=" +
                                         "\"" + source.getText() + "\"")
                 );
+
             }
             // if creating new label
             else {

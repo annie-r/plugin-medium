@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
+
 public class ViewNode {
     final ArrayList<String> missingLabelClasses = new ArrayList<>(Arrays.asList("Image","FloatingActionButton"));
     protected final String className;
@@ -14,6 +15,60 @@ public class ViewNode {
     protected LogicalPosition posInDoc;
 
     public static String EMPTY_LABEL_STRING = "?";
+
+    // list from https://developer.android.com/reference/android/view/ViewGroup
+    public static String[] viewGroupClassNames =
+            {
+                    "AbsoluteLayout",
+                    "AdapterView",
+                    "FragmentBreadCrumbs",
+                    "FrameLayout",
+                    "GridLayout",
+                    "InlineContentView",
+                    "LinearLayout",
+                    "RelativeLayout",
+                    "SlidingDrawer",
+                    "Toolbar",
+                    "TvView",
+                    "AbsListView",
+                    "AbsSpinner",
+                    "ActionMenuView",
+                    "AdapterViewAnimator",
+                    "AdapterViewFlipper",
+                    "AppWidgetHostView",
+                    "CalendarView",
+                    "DatePicker",
+                    "DialerFilter",
+                    "ExpandableListView",
+                    "Gallery",
+                    "GestureOverlayView",
+                    "GridView",
+                    "HorizontalScrollView",
+                    "ImageSwitcher",
+                    "ListView",
+                    "MediaController",
+                    "NumberPicker",
+                    "RadioGroup",
+                    "ScrollView",
+                    "SearchView",
+                    //TODO check if all these views are never visible
+                    "Spinner",
+                    "StackView",
+                    "TabHost",
+                    "TabWidget",
+                    "TableLayout",
+                    "TableRow",
+                    "TextSwitcher",
+                    "TimePicker",
+                    "TwoLineListItem",
+                    "ViewAnimator",
+                    "ViewFlipper",
+                    "ViewSwitcher",
+                    "WebView",
+                    "ZoomControls"
+                    // TODO custom elements
+            };
+
 
     public ViewNode(String classArg, ViewNode parentArg, int line, int column){
         className = classArg;
@@ -28,6 +83,12 @@ public class ViewNode {
     }
 
     public boolean isMissingLabelTestClass(){
+        for (String name : viewGroupClassNames){
+            if (className.contains(name)){
+                return false;
+            }
+        }
+
         for( String name : missingLabelClasses){
             if (className.contains(name)){
                 return true;
