@@ -9,6 +9,12 @@ import com.intellij.openapi.editor.LogicalPosition;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindow;
+import com.intellij.psi.PsiDocumentManager;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.xml.XmlAttribute;
+import com.intellij.psi.xml.XmlFile;
+import com.intellij.psi.xml.XmlTag;
+import com.intellij.psi.xml.XmlTagValue;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -56,9 +62,12 @@ public class LabelWindow implements FocusListener {
     }
 
     public void testAction(){
+
         Editor editor = FileEditorManager.getInstance(project).getSelectedTextEditor();
         final Document document = editor.getDocument();
-        // Work off of the primary caret to get the selection info
+        XmlFile xmlFile = (XmlFile) PsiDocumentManager.getInstance(project).getPsiFile(document);
+
+                // Work off of the primary caret to get the selection info
         Caret primaryCaret = editor.getCaretModel().getPrimaryCaret();
         int start = primaryCaret.getSelectionStart();
         int end = primaryCaret.getSelectionEnd();
@@ -75,6 +84,18 @@ public class LabelWindow implements FocusListener {
     }
 
     public void getLabels(){
+
+        Editor editor = FileEditorManager.getInstance(project).getSelectedTextEditor();
+        final Document document = editor.getDocument();
+        XmlFile xmlFile = (XmlFile) PsiDocumentManager.getInstance(project).getPsiFile(document);
+        XmlTag root = xmlFile.getRootTag();
+        XmlAttribute[] attrs = xmlFile.getDocument().getRootTag().getAttributes();
+        for( XmlAttribute x : attrs){
+            String val = x.getValue();
+            String name = x.getName();
+            int a=0;
+        }
+        PsiElement[] childs = root.getChildren();
         String fileText = FileEditorManager.getInstance(project).getSelectedTextEditor().getDocument().getText();
 
         //reset window
@@ -161,7 +182,7 @@ public class LabelWindow implements FocusListener {
         primaryCaret.moveToLogicalPosition(target.getLabelStartPosition());
         int offset = primaryCaret.getOffset();
         int lineLength = target.getLabelEndPosition().column - target.getLabelStartPosition().column;
-        //editor.visualPositionToPoint2D(editor.offsetToVisualPosition(offset));
+        editor.visualPositionToPoint2D(editor.offsetToVisualPosition(offset));
         // if valid label, replace
         if (!source.getText().equals(ViewNode.EMPTY_LABEL_STRING)){
             // if replacing old label

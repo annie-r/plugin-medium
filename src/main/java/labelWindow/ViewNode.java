@@ -89,6 +89,9 @@ public class ViewNode {
             }
         }
 
+        return true;
+
+        /*
         for( String name : missingLabelClasses){
             if (className.contains(name)){
                 return true;
@@ -96,6 +99,8 @@ public class ViewNode {
         }
 
         return false;
+
+         */
     }
 
     public String getLabelValue(){
