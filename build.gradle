@@ -21,10 +21,15 @@ dependencies{
     testCompile 'junit:junit:4.12'
 
     compile files('C:\\Users\\ansross\\Documents\\Research\\PlugIn\\common-24.3.jar')
+    //compile files('C:\\Users\\ansross\\Documents\\Research\\PlugIn\\common-23.0.2.jar')
+    //compile files('C:\\Users\\ansross\\Documents\\Research\\PlugIn\\common-22.7.0.jar')
+
+
 
     compile files('C:\\Users\\ansross\\Documents\\Research\\PlugIn\\sdklib-1.0.0.jar')
 
-    //compile files('C:\\Users\\ansross\\Documents\\Research\\PlugIn\\layoutlib-api-22.7.0.jar') // has no resource namespace or layoutcallback
+    compile files('C:\\Users\\ansross\\Documents\\Research\\PlugIn\\layoutlib-api-22.7.0.jar') // Use for IProjectCallback has no resource namespace or layoutcallback
+    compile files('C:\\Users\\ansross\\Documents\\Research\\PlugIn\\layoutlib-api-26.3.0.jar') // Use for ResourceNamespace
     //compile files('C:\\Users\\ansross\\Documents\\Research\\PlugIn\\layoutlib-api-26.5.0.jar') //has resource namespace but missing others
     //compile files('C:\\Users\\ansross\\Documents\\Research\\PlugIn\\layoutlib-api-23.0.2.jar') //close, no resource namespace
     //compile files('C:\\Users\\ansross\\Documents\\Research\\PlugIn\\layoutlib-api-24.2.3.jar') // no resource namespace
@@ -33,8 +38,10 @@ dependencies{
     //compile files('C:\\Users\\ansross\\Documents\\Research\\PlugIn\\layoutlib-api-26.0.1.jar') // no Resrouce namespace
     //compile files('C:\\Users\\ansross\\Documents\\Research\\PlugIn\\layoutlib-api-26.1.4.jar') // no resource namespace
     //compile files('C:\\Users\\ansross\\Documents\\Research\\PlugIn\\layoutlib-api-26.2.1.jar') // MOST PROMISING. has all casses, just a few signatures wrong
-    compile files('C:\\Users\\ansross\\Documents\\Research\\PlugIn\\layoutlib-api-26.3.2.jar') // no IProjectCallback
+    //compile files('C:\\Users\\ansross\\Documents\\Research\\PlugIn\\layoutlib-api-26.3.2.jar') // no IProjectCallback
     //compile files('C:\\Users\\ansross\\Documents\\Research\\PlugIn\\layoutlib-api-26.4.2.jar') // no IProjectCallback
+    //compile files('C:\\Users\\ansross\\Documents\\Research\\PlugIn\\layoutlib-api-26.6.0.jar') // no IProjectCallback
+
 
 
     //compile files('C:\\studmast\\prebuilts\\tools\\common\\offline-m2\\com\\android\\tools\\layoutlib\\layoutlib-api\\25.2.0\\layoutlib-api-25.2.0.jar')
@@ -42,8 +49,11 @@ dependencies{
 
 
     compile files('C:\\Users\\ansross\\Documents\\Research\\PlugIn\\sdk-common-22.7.1.jar')
-    compile files('C:\\Users\\ansross\\Documents\\Research\\PlugIn\\sdk-common-22.0.1.jar')
-    compile files('C:\\Users\\ansross\\Documents\\Research\\PlugIn\\sdk-common-23.0.2.jar')
+    compile files('C:\\Users\\ansross\\Documents\\Research\\PlugIn\\sdk-common-25.3.0.jar')
+    //compile files('C:\\Users\\ansross\\Documents\\Research\\PlugIn\\sdk-common-25.2.0.jar')
+    //compile files('C:\\Users\\ansross\\Documents\\Research\\PlugIn\\sdk-common-25.0.0.jar')
+    //compile files('C:\\Users\\ansross\\Documents\\Research\\PlugIn\\sdk-common-22.0.1.jar')
+    //compile files('C:\\Users\\ansross\\Documents\\Research\\PlugIn\\sdk-common-23.0.2.jar')
 
     compile files('C:\\Users\\ansross\\Documents\\Research\\PlugIn\\android-all-4.4_r1-robolectric-0.jar')
 }
